@@ -40,7 +40,6 @@ class ItemDetailsFragment : Fragment() {
         binding.apply {
             repName.setText(repo.repoName, TextView.BufferType.SPANNABLE)
             repOwnerName.setText(repo.repoOwner, TextView.BufferType.SPANNABLE)
-            lastCommitDate.setText(repo.lastCommitDate, TextView.BufferType.SPANNABLE)
             saveAction.setOnClickListener {
                 findNavController().navigate(action)
                 updateItem()
@@ -53,19 +52,33 @@ class ItemDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val name = navigationArgs.itemName
-        viewModel.getCurrentRepoItemIndex(name)
-        repo = viewModel.retrieveRepo()
+        val id = navigationArgs.itemId
+        repo = viewModel.retrieveRepo(id)
         bind(repo)
-        viewModel.initializeDate()
-        viewModel.date2.observe(this.viewLifecycleOwner) {
-            binding.lastCommitDate.setText(it, TextView.BufferType.SPANNABLE)
+        if (viewModel.allRepoItem.value!![id].lastCommitDate.isBlank()) viewModel.initializeDate(id)
+        binding.lastCommitDate.setText(viewModel.date.value, TextView.BufferType.SPANNABLE)
+        dateFieldSrcSwitcher(id)
+    }
+
+    private fun dateFieldSrcSwitcher(itemId: Int){
+        viewModel.date.observe(this.viewLifecycleOwner){
+            if (viewModel.allRepoItem.value!![itemId].lastCommitDate.isEmpty()){
+                viewModel.date.observe(this.viewLifecycleOwner){
+                    binding.lastCommitDate.setText(it)
+                }
+            }
+            else {
+                viewModel.allRepoItem.observe(this.viewLifecycleOwner){
+                    binding.lastCommitDate.setText(it[itemId].lastCommitDate)
+                }
+            }
         }
     }
 
     private fun updateItem() {
         if (isEntryValid()) {
             viewModel.updateRepo(
+                repo.id,
                 this.binding.repName.text.toString(),
                 repo.repoUrl,
                 this.binding.repOwnerName.text.toString(),

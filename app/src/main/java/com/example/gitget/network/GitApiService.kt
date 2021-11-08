@@ -32,9 +32,7 @@ private val retrofit = Retrofit.Builder()
 interface GitApiService {
     @GET("search/repositories")
     fun searchReposAsync(
-        @Query("q") keyWord: String,
-        @Query("page") pageNum: Int,
-        @Query("per_page") sizePage: Int
+        @Query("q") keyWord: String
     ): Deferred<Response<RepositoryInfoList>>
 
     @GET("repos/{owner}/{repo}/branches/master")

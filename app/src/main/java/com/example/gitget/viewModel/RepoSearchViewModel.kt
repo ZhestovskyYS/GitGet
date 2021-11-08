@@ -11,63 +11,64 @@ const val DATE = ""
 
 class RepoSearchViewModel : ViewModel() {
 
-    var searchText: String = ""
-    var currentItemIndex: Int = 0
-
     private val startInfo = mutableListOf<SimpleRepositoryInfo>()
 
-    val _date2 = MutableLiveData<String>()
-    val date2: LiveData<String> get() = _date2
+    val date = MutableLiveData<String>()
 
-    val allRepoItem = MutableLiveData<List<RepoItem>>()
+    private val _allRepoItem = MutableLiveData<List<RepoItem>>()
+    val allRepoItem: LiveData<List<RepoItem>> get() = _allRepoItem
 
     /**
      *  Retrieve [SimpleRepositoryInfo] from query to the web-server
      */
-    private suspend fun getRepoSimpleInfo(): List<SimpleRepositoryInfo> {
-        return GitRepImpl.search(searchText)
-    }
+    private suspend fun getRepoSimpleInfo(searchText: String): List<SimpleRepositoryInfo> =
+        GitRepImpl.search(searchText)
 
     /**
      *  Retrieve date of last commit from server
      */
-    private suspend fun getDetails(info: SimpleRepositoryInfo) {
+    private suspend fun getDetails(info: SimpleRepositoryInfo, itemId: Int) {
         val details = GitRepImpl.getDetails(info)
-        _date2.postValue(details?.commit?.details?.author?.date)
+        date.postValue(details?.commit?.details?.author?.date)
     }
 
     /**
      *  Get all the retrieved from the net data and put it into the viewModel instances
      */
-    fun initializeInfo() {
-        if (isSearchTextValid()) {
+    fun initializeInfo(searchText: String) {
+        if (isSearchTextValid(searchText)) {
             viewModelScope.launch(Dispatchers.IO) {
-                startInfo.addAll(getRepoSimpleInfo())
+                startInfo.addAll(getRepoSimpleInfo(searchText))
                 fillAllRepoItem()
             }
         } else return
     }
 
-    private fun isSearchTextValid(): Boolean = searchText != "" && searchText.isNotEmpty()
+    private fun isSearchTextValid(searchText: String): Boolean =
+        searchText != "" && searchText.isNotEmpty()
 
-    fun initializeDate() {
+    fun initializeDate(itemId: Int) {
         if (startInfo.isNotEmpty())
             viewModelScope.launch(Dispatchers.IO) {
                 val infoItem = SimpleRepositoryInfo(
-                    startInfo[currentItemIndex].repositoryName, startInfo[currentItemIndex].repositoryURL,
-                    startInfo[currentItemIndex].repositoryOwner
+                    startInfo[itemId].repositoryName, startInfo[itemId].repositoryURL,
+                    startInfo[itemId].repositoryOwner
                 )
-                getDetails(infoItem)
+                getDetails(infoItem, itemId)
             }
         else return
     }
 
-    fun fillAllRepoItem() {
+    /**
+     *
+     */
+    private fun fillAllRepoItem() {
         viewModelScope.launch(Dispatchers.IO) {
             val allRepoInstance = mutableListOf<RepoItem>()
-            startInfo.forEach {
+            startInfo.forEachIndexed { index, it ->
                 allRepoInstance.add(
                     RepoItem(
+                        id = index,
                         repoName = it.repositoryName,
                         repoUrl = it.repositoryURL,
                         repoOwner = it.repositoryOwner.userName,
@@ -75,12 +76,14 @@ class RepoSearchViewModel : ViewModel() {
                     )
                 )
             }
-            allRepoItem.postValue(allRepoInstance)
+            _allRepoItem.postValue(allRepoInstance)
         }
     }
 
     fun clearAllRepoItem() {
-        this.allRepoItem.value = mutableListOf<RepoItem>()
+        startInfo.clear()
+        _allRepoItem.value = mutableListOf()
+
     }
 
     fun isEntryValid(
@@ -92,47 +95,37 @@ class RepoSearchViewModel : ViewModel() {
     }
 
     fun updateRepo(
+        id: Int,
         repoName: String,
         repoUrl: String,
         repoOwner: String,
         date: String
     ) {
-        val updatedRepoItem = getUpdatedRepoEntry(repoName, repoUrl, repoOwner, date)
+        val updatedRepoItem = getUpdatedRepoEntry(id, repoName, repoUrl, repoOwner, date)
         updateRepo(updatedRepoItem)
     }
 
-    fun getCurrentRepoItemIndex(name: String) {
-        startInfo.forEachIndexed { index, it ->
-            if (it.repositoryName == name)
-                currentItemIndex = index
-        }
-    }
-
-    fun retrieveRepo() = RepoItem(
-        repoName = startInfo[currentItemIndex].repositoryName,
-        repoUrl = startInfo[currentItemIndex].repositoryURL,
-        repoOwner = startInfo[currentItemIndex].repositoryOwner.userName,
-        lastCommitDate = DATE
-    )
+    fun retrieveRepo(currentItemIndex: Int) = allRepoItem.value!![currentItemIndex]
 
     private fun updateRepo(repoItem: RepoItem) {
         viewModelScope.launch(Dispatchers.IO) {
-            allRepoItem.value?.get(currentItemIndex)!!.apply {
+            _allRepoItem.value?.get(repoItem.id)!!.apply {
                 repoName = repoItem.repoName
                 repoOwner = repoItem.repoOwner
-                repoUrl = repoItem.repoUrl
                 lastCommitDate = repoItem.lastCommitDate
             }
         }
     }
 
     private fun getUpdatedRepoEntry(
+        id: Int,
         repoName: String,
         repoUrl: String,
         repoOwner: String,
         date: String
     ): RepoItem {
         return RepoItem(
+            id = id,
             repoName = repoName,
             repoUrl = repoUrl,
             repoOwner = repoOwner,

@@ -20,8 +20,8 @@
         android:label="Repo details"
         tools:layout="@layout/item_details_fragment" >
         <argument
-            android:name="item_name"
-            app:argType="string" />
+            android:name="item_id"
+            app:argType="integer" />
         <action
             android:id="@+id/action_itemDetailsFragment_to_itemListFragment"
             app:destination="@id/itemListFragment" />

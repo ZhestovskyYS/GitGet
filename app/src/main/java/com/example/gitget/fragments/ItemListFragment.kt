@@ -34,7 +34,7 @@ class ItemListFragment : Fragment() {
 
         val adapter = ItemListAdapter {
             val action =
-                ItemListFragmentDirections.actionItemListFragmentToItemDetailsFragment(it.repoName)
+                ItemListFragmentDirections.actionItemListFragmentToItemDetailsFragment(it.id)
             this.findNavController().navigate(action)
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this.context)
@@ -48,8 +48,9 @@ class ItemListFragment : Fragment() {
             }
         }
         binding.searchAction.setOnClickListener {
-            viewModel.searchText = binding.repoNameField.text.toString()
-            viewModel.initializeInfo()
+            viewModel.clearAllRepoItem()
+            val searchText = binding.repoNameField.text.toString()
+            viewModel.initializeInfo(searchText)
         }
 
 

@@ -22,25 +22,12 @@ object GitRepImpl {
     }
 
     suspend fun search(
-        keyword: String?/*,
-        from: Int,
-        count: Int*/
+        keyword: String?
     ): List<SimpleRepositoryInfo> {
         if (keyword.isNullOrBlank()) return emptyList()
-        val response = GitApi.gitApiService.searchReposAsync(
-            keyword,
-            1/*getPageNumberByPosition(from, count)*/,
-            10/*count*/
-        ).await()
+        val response = GitApi.gitApiService.searchReposAsync(keyword).await()
         if (!response.isSuccessful)
             throw Exception(response.errorBody()?.string())
         return response.body()?.list ?: listOf()
     }
-
-   /* private fun getPageNumberByPosition(from: Int, count: Int): Int {
-        if (from == 0) return 1
-        if (count == 0) throw IllegalArgumentException("page size must not be null")
-        if (from < count) return 1
-        return from / count + 1
-    }*/
 }
