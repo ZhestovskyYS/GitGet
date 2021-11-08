@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">GitGet</string>
+    <string name="rep_name">Repository Name</string>
+    <string name="button_save">SAVE</string>
+    <string name="search">SEARCH</string>
+    <string name="repository_name">Repository name</string>
+    <string name="last_commit_date">Last commit date</string>
+    <string name="repository_owner_login">Repository owner login</string>
+    <string name="_13_04_2000">13.04.2000</string>
+    <string name="repo_name">Repo name</string>
+    <string name="cancel">CANCEL</string>
+</resources>

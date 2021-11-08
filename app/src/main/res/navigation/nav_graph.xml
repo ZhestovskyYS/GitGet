@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/itemListFragment">
+
+    <fragment
+        android:id="@+id/itemListFragment"
+        android:name="com.example.gitget.fragments.ItemListFragment"
+        android:label="Search for repo"
+        tools:layout="@layout/item_list_fragment" >
+        <action
+            android:id="@+id/action_itemListFragment_to_itemDetailsFragment"
+            app:destination="@id/itemDetailsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/itemDetailsFragment"
+        android:name="com.example.gitget.fragments.ItemDetailsFragment"
+        android:label="Repo details"
+        tools:layout="@layout/item_details_fragment" >
+        <argument
+            android:name="item_name"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_itemDetailsFragment_to_itemListFragment"
+            app:destination="@id/itemListFragment" />
+    </fragment>
+</navigation>
