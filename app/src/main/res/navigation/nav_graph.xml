@@ -7,21 +7,39 @@
 
     <fragment
         android:id="@+id/itemListFragment"
-        android:name="com.example.gitget.fragments.ItemListFragment"
+        android:name="com.example.gitget.presentation.fragments.itemList.ItemListFragment"
         android:label="Search for repo"
-        tools:layout="@layout/item_list_fragment" >
+        tools:layout="@layout/item_list_fragment">
+        <argument
+            android:name="item_id"
+            app:argType="integer" />
+        <argument
+            android:name="repo_name"
+            app:argType="string" />
+        <argument
+            android:name="repo_owner"
+            app:argType="string" />
+        <argument
+            android:name="date      "
+            app:argType="string" />
         <action
             android:id="@+id/action_itemListFragment_to_itemDetailsFragment"
             app:destination="@id/itemDetailsFragment" />
     </fragment>
     <fragment
         android:id="@+id/itemDetailsFragment"
-        android:name="com.example.gitget.fragments.ItemDetailsFragment"
+        android:name="com.example.gitget.presentation.fragments.itemDetails.ItemDetailsFragment"
         android:label="Repo details"
-        tools:layout="@layout/item_details_fragment" >
+        tools:layout="@layout/item_details_fragment">
         <argument
             android:name="item_id"
             app:argType="integer" />
+        <argument
+            android:name="repo_name"
+            app:argType="string" />
+        <argument
+            android:name="repo_owner"
+            app:argType="string" />
         <action
             android:id="@+id/action_itemDetailsFragment_to_itemListFragment"
             app:destination="@id/itemListFragment" />

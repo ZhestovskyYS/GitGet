@@ -1,6 +1,9 @@
-package com.example.gitget.viewModel
+package com.example.gitget.presentation.fragments.itemList
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.gitget.data.RepoItem
 import com.example.gitget.network.models.SimpleRepositoryInfo
 import com.example.gitget.network.repository.GitRepository
@@ -8,25 +11,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class RepoSearchViewModel @Inject constructor(
+class ItemListViewModel @Inject constructor(
     private val gitRepository: GitRepository
 ) : ViewModel() {
 
     private val startInfo = mutableListOf<SimpleRepositoryInfo>()
-
-    private val _date = MutableLiveData<String>()
-    val date: LiveData<String> = _date
 
     private val _allRepoItem = MutableLiveData<List<RepoItem>>()
     val allRepoItem: LiveData<List<RepoItem>> get() = _allRepoItem
 
     private suspend fun getRepoSimpleInfo(searchText: String): List<SimpleRepositoryInfo> =
         gitRepository.search(searchText)
-
-    private suspend fun getDetails(info: SimpleRepositoryInfo) {
-        val details = gitRepository.getDetails(info)
-        _date.postValue(details?.commit?.details?.author?.date)
-    }
 
     fun initializeInfo(searchText: String) {
         if (isSearchTextValid(searchText)) {
@@ -35,21 +30,6 @@ class RepoSearchViewModel @Inject constructor(
                 fillAllRepoItem()
             }
         } else return
-    }
-
-    private fun isSearchTextValid(searchText: String): Boolean =
-        searchText != "" && searchText.isNotEmpty()
-
-    fun initializeDate(itemId: Int) {
-        if (startInfo.isNotEmpty())
-            viewModelScope.launch(Dispatchers.IO) {
-                val infoItem = SimpleRepositoryInfo(
-                    startInfo[itemId].repositoryName, startInfo[itemId].repositoryURL,
-                    startInfo[itemId].repositoryOwner
-                )
-                getDetails(infoItem)
-            }
-        else return
     }
 
     private fun fillAllRepoItem() {
@@ -70,22 +50,10 @@ class RepoSearchViewModel @Inject constructor(
         }
     }
 
-    fun clearDateOnCancel(){
-        _date.value = ""
-    }
-
     fun clearAllRepoItem() {
         startInfo.clear()
         _allRepoItem.value = mutableListOf()
 
-    }
-
-    fun isEntryValid(
-        repoName: String,
-        lastCommitDate: String,
-        repoOwner: String
-    ): Boolean {
-        return !(repoName.isBlank() || lastCommitDate.isBlank() || repoOwner.isBlank())
     }
 
     fun updateRepo(
@@ -126,5 +94,8 @@ class RepoSearchViewModel @Inject constructor(
             lastCommitDate = date
         )
     }
+
+    private fun isSearchTextValid(searchText: String): Boolean =
+        searchText != "" && searchText.isNotEmpty()
 
 }

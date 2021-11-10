@@ -1,12 +1,13 @@
-package com.example.gitget
+package com.example.gitget.presentation.activity
 
-import androidx.appcompat.app.AppCompatActivity
+import dagger.android.support.DaggerAppCompatActivity
 import android.os.Bundle
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI.setupActionBarWithNavController
+import com.example.gitget.R
 
-class MainActivity : AppCompatActivity(R.layout.activity_main) {
+class MainActivity : DaggerAppCompatActivity(R.layout.activity_main) {
 
     private lateinit var navController: NavController
 

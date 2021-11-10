@@ -1,4 +1,4 @@
-package com.example.gitget.fragments
+package com.example.gitget.presentation.fragments.itemList.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

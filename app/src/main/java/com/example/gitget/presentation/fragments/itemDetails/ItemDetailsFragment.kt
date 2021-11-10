@@ -1,39 +1,31 @@
-package com.example.gitget.fragments
+package com.example.gitget.presentation.fragments.itemDetails
 
 import android.os.Bundle
-import android.view.LayoutInflater
+import by.kirich1409.viewbindingdelegate.viewBinding
 import android.view.View
-import android.view.ViewGroup
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.example.gitget.R
 import com.example.gitget.data.RepoItem
 import com.example.gitget.databinding.ItemDetailsFragmentBinding
 import com.example.gitget.viewModel.RepoSearchViewModel
-import com.example.gitget.viewModel.RepoSearchViewModelFactory
+import com.example.gitget.utils.ViewModelFactory
+import dagger.android.support.DaggerFragment
+import javax.inject.Inject
 
-class ItemDetailsFragment : Fragment() {
+class ItemDetailsFragment : DaggerFragment(R.layout.item_details_fragment) {
 
-    private val viewModel: RepoSearchViewModel by activityViewModels {
-        RepoSearchViewModelFactory()
-    }
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+    private val viewModel by activityViewModels<ItemDetailsViewModel> { viewModelFactory }
+
     private val navigationArgs: ItemDetailsFragmentArgs by navArgs()
 
     private lateinit var repo: RepoItem
 
-    private var _binding: ItemDetailsFragmentBinding? = null
-    private val binding get() = _binding!!
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        _binding = ItemDetailsFragmentBinding.inflate(inflater, container, false)
-        return binding.root
-    }
+    private val binding by viewBinding(ItemDetailsFragmentBinding::bind)
 
     private fun bind(repo: RepoItem) {
         val action = ItemDetailsFragmentDirections.actionItemDetailsFragmentToItemListFragment()
@@ -60,15 +52,14 @@ class ItemDetailsFragment : Fragment() {
         dateFieldSrcSwitcher(id)
     }
 
-    private fun dateFieldSrcSwitcher(itemId: Int){
-        viewModel.date.observe(this.viewLifecycleOwner){
-            if (viewModel.allRepoItem.value!![itemId].lastCommitDate.isEmpty()){
-                viewModel.date.observe(this.viewLifecycleOwner){
+    private fun dateFieldSrcSwitcher(itemId: Int) {
+        viewModel.date.observe(this.viewLifecycleOwner) {
+            if (viewModel.allRepoItem.value!![itemId].lastCommitDate.isEmpty()) {
+                viewModel.date.observe(this.viewLifecycleOwner) {
                     binding.lastCommitDate.setText(it)
                 }
-            }
-            else {
-                viewModel.allRepoItem.observe(this.viewLifecycleOwner){
+            } else {
+                viewModel.allRepoItem.observe(this.viewLifecycleOwner) {
                     binding.lastCommitDate.setText(it[itemId].lastCommitDate)
                 }
             }
@@ -88,7 +79,7 @@ class ItemDetailsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        _binding = null
+        viewModel.clearDateOnCancel()
         super.onDestroyView()
     }
 
@@ -99,6 +90,4 @@ class ItemDetailsFragment : Fragment() {
             binding.repOwnerName.text.toString()
         )
     }
-
-
 }

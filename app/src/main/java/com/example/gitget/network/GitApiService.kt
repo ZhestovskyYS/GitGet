@@ -13,35 +13,20 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-val logging : HttpLoggingInterceptor = HttpLoggingInterceptor()
-    .setLevel(HttpLoggingInterceptor.Level.BODY)
-
-val httpClient : OkHttpClient.Builder = OkHttpClient.Builder()
-    .addInterceptor(logging)
-
-
-private const val BASE_URL = "https://api.github.com/"
-
-private val retrofit = Retrofit.Builder()
-    .baseUrl(BASE_URL)
-    .addConverterFactory(GsonConverterFactory.create())
-    .addCallAdapterFactory(CoroutineCallAdapterFactory())
-    .client(httpClient.build())
-    .build()
-
+/**
+ *   Remove Differed and don't use await() method and
+ *   response.isSuccessful in GitRepository class
+ */
 interface GitApiService {
     @GET("search/repositories")
     fun searchReposAsync(
         @Query("q") keyWord: String
     ): Deferred<Response<RepositoryInfoList>>
 
-    @GET("repos/{owner}/{repo}/branches/master")
+    @GET("repos/{owner}/{repo}/branches/{branch_name}")
     fun getRepoDetailsAsync(
         @Path("owner") owner: String,
-        @Path("repo") repo: String
+        @Path("repo") repo: String,
+        @Path("branch_name") branchName: String
     ): Deferred<Response<RepositoryDetails>>
-}
-
-object GitApi {
-    val gitApiService: GitApiService by lazy { retrofit.create(GitApiService::class.java) }
 }
