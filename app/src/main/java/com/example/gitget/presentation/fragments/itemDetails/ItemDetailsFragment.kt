@@ -8,6 +8,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.gitget.R
+import com.example.gitget.data.ArgData
 import com.example.gitget.data.RepoItem
 import com.example.gitget.databinding.ItemDetailsFragmentBinding
 import com.example.gitget.utils.ViewModelFactory
@@ -24,45 +25,76 @@ class ItemDetailsFragment : DaggerFragment(R.layout.item_details_fragment) {
 
     private val binding by viewBinding(ItemDetailsFragmentBinding::bind)
 
-    private fun bind() {
-        val actionOnSave = ItemDetailsFragmentDirections
-            .actionItemDetailsFragmentToItemListFragment(
-                itemId = navArgs.itemId,
-                repoName = binding.repName.text.toString(),
-                repoOwner = binding.repOwnerName.text.toString(),
-                date = binding.lastCommitDate.text.toString()
-            )
-        val actionOnCancel = ItemDetailsFragmentDirections
-            .actionItemDetailsFragmentToItemListFragment(
-                itemId = navArgs.itemId,
-                repoName = binding.repName.text.toString(),
-                repoOwner = binding.repOwnerName.text.toString(),
-                date = binding.lastCommitDate.text.toString()
-            )
+    private fun bindFields(){
         binding.apply {
             repName.setText(navArgs.repoName, TextView.BufferType.SPANNABLE)
             repOwnerName.setText(navArgs.repoOwner, TextView.BufferType.SPANNABLE)
+        }
+    }
+
+    private fun bindActions() {
+        var argsData = ArgData(0, "","", "")
+        viewModel.args.observe(this.viewLifecycleOwner){
+            argsData = ArgData(
+                it.itemId,
+                it.repoName,
+                it.repoOwner,
+                it.date
+            )
+        }
+        binding.apply {
             saveAction.setOnClickListener {
+                viewModel.initializeArgs(
+                    navArgs.itemId,
+                    binding.repName.text.toString(),
+                    binding.repOwnerName.text.toString(),
+                    binding.lastCommitDate.text.toString()
+                )
                 if (isEntryValid())
-                    findNavController().navigate(actionOnSave)
+                    findNavController().navigate(
+                        ItemDetailsFragmentDirections
+                            .actionItemDetailsFragmentToItemListFragment(
+                                itemId = argsData.itemId,
+                                repoName = argsData.repoName,
+                                repoOwner = argsData.repoOwner,
+                                date = argsData.date
+                            )
+                    )
                 else
-                    findNavController().navigate(actionOnCancel)
+                    findNavController().navigate(
+                        ItemDetailsFragmentDirections
+                            .actionItemDetailsFragmentToItemListFragment(
+                                itemId = navArgs.itemId,
+                                repoName = navArgs.repoName,
+                                repoOwner = navArgs.repoOwner,
+                                date = binding.lastCommitDate.text.toString()
+                            )
+                    )
             }
             cancelAction.setOnClickListener {
-                findNavController().navigate(actionOnCancel)
+                findNavController().navigate(
+                    ItemDetailsFragmentDirections
+                        .actionItemDetailsFragmentToItemListFragment(
+                            itemId = navArgs.itemId,
+                            repoName = navArgs.repoName,
+                            repoOwner = navArgs.repoOwner,
+                            date = binding.lastCommitDate.text.toString()
+                        )
+                )
             }
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bind()
+        bindFields()
         if (navArgs.date.isBlank()) viewModel.initializeDate(
             navArgs.repoName,
             navArgs.repoOwner
         )
         binding.lastCommitDate.setText(viewModel.date.value, TextView.BufferType.SPANNABLE)
         dateFieldSrcSwitcher()
+        bindActions()
     }
 
     private fun dateFieldSrcSwitcher() {

@@ -29,8 +29,17 @@ class ItemListFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.i("LifeCycle", "Is created")
+        val args: Bundle? = arguments
+        val date = args?.getString("date")
+        if (!date.isNullOrBlank())
+            viewModel.updateRepo(
+                id = navArgs.itemId,
+                repoName = navArgs.repoName,
+                repoOwner = navArgs.repoOwner,
+                date = navArgs.date
+            )
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 

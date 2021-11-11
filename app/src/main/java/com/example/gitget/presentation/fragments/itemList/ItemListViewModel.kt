@@ -17,8 +17,8 @@ class ItemListViewModel @Inject constructor(
 
     private val startInfo = mutableListOf<SimpleRepositoryInfo>()
 
-    private val _allRepoItem = MutableLiveData<List<RepoItem>>()
-    val allRepoItem: LiveData<List<RepoItem>> get() = _allRepoItem
+    private val _allRepoItem = MutableLiveData<MutableList<RepoItem>>()
+    val allRepoItem: LiveData<MutableList<RepoItem>> get() = _allRepoItem
 
     private suspend fun getRepoSimpleInfo(searchText: String): List<SimpleRepositoryInfo> =
         gitRepository.search(searchText)
@@ -56,16 +56,14 @@ class ItemListViewModel @Inject constructor(
 
     }
 
-    private fun updateRepo(id: Int, repoName: String, repoOwner: String, date: String) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val newRepo = _allRepoItem.value!![id].copy(
-                repoName = repoName,
-                repoOwner = repoOwner,
-                lastCommitDate = date
-            )
-            _allRepoItem.value!!.minus(_allRepoItem.value!![id])
-            _allRepoItem.value!!.plus(newRepo)
-        }
+    fun updateRepo(id: Int, repoName: String, repoOwner: String, date: String) {
+        val newRepo = _allRepoItem.value!![id].copy(
+            repoName = repoName,
+            repoOwner = repoOwner,
+            lastCommitDate = date
+        )
+        _allRepoItem.value!![id] = newRepo
+        allRepoItem
     }
 
     private fun isSearchTextValid(searchText: String): Boolean =

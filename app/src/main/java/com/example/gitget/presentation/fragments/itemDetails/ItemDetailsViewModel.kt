@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.gitget.data.ArgData
 import com.example.gitget.data.RepoItem
 import com.example.gitget.network.models.SimpleRepositoryInfo
 import com.example.gitget.network.repository.GitRepository
@@ -14,6 +15,9 @@ import javax.inject.Inject
 class ItemDetailsViewModel @Inject constructor(
     private val gitRepository: GitRepository
 ) : ViewModel() {
+
+    private val _args = MutableLiveData<ArgData>()
+    val args: LiveData<ArgData> = _args
 
     private val _date = MutableLiveData<String>()
     val date: LiveData<String> = _date
@@ -33,6 +37,20 @@ class ItemDetailsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             getDetails(repoName, repoOwner)
         }
+    }
+
+    fun initializeArgs(
+        itemId: Int,
+        repoName: String,
+        repoOwner: String,
+        date: String
+    ){
+        _args.value = ArgData(
+            itemId,
+            repoName,
+            repoOwner,
+            date
+        )
     }
 
     fun isEntryValid(

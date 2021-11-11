@@ -2,8 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -15,7 +14,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin"
-            android:hint=""
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -26,8 +24,7 @@
                 android:layout_height="match_parent"
                 android:inputType="textAutoComplete|textCapWords"
                 android:singleLine="true"
-                android:hint="@string/repository_name"
-                android:text="@string/repo_name"/>
+                android:hint="@string/repository_name"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -35,7 +32,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin"
-            android:hint=""
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/rep_name_label">
@@ -46,8 +42,7 @@
                 android:layout_height="match_parent"
                 android:inputType="date"
                 android:singleLine="true"
-                android:hint="@string/last_commit_date"
-                android:text="@string/_13_04_2000"/>
+                android:hint="@string/last_commit_date"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -55,7 +50,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin"
-            android:hint=""
             app:layout_constraintBottom_toTopOf="@+id/save_action"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,8 +61,7 @@
                 android:layout_height="match_parent"
                 android:inputType="number"
                 android:singleLine="true"
-                android:hint="@string/repository_owner_login"
-                android:text="Owner"/>
+                android:hint="@string/repository_owner_login"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
