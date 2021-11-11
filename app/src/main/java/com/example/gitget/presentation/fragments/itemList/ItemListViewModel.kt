@@ -63,7 +63,6 @@ class ItemListViewModel @Inject constructor(
             lastCommitDate = date
         )
         _allRepoItem.value!![id] = newRepo
-        allRepoItem
     }
 
     private fun isSearchTextValid(searchText: String): Boolean =

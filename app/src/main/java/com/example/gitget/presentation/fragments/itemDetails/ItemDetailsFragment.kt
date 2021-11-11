@@ -25,7 +25,7 @@ class ItemDetailsFragment : DaggerFragment(R.layout.item_details_fragment) {
 
     private val binding by viewBinding(ItemDetailsFragmentBinding::bind)
 
-    private fun bindFields(){
+    private fun bindFields() {
         binding.apply {
             repName.setText(navArgs.repoName, TextView.BufferType.SPANNABLE)
             repOwnerName.setText(navArgs.repoOwner, TextView.BufferType.SPANNABLE)
@@ -33,8 +33,8 @@ class ItemDetailsFragment : DaggerFragment(R.layout.item_details_fragment) {
     }
 
     private fun bindActions() {
-        var argsData = ArgData(0, "","", "")
-        viewModel.args.observe(this.viewLifecycleOwner){
+        var argsData = ArgData(0, "", "", "")
+        viewModel.args.observe(this.viewLifecycleOwner) {
             argsData = ArgData(
                 it.itemId,
                 it.repoName,
@@ -104,7 +104,7 @@ class ItemDetailsFragment : DaggerFragment(R.layout.item_details_fragment) {
                     binding.lastCommitDate.setText(it)
                 }
             } else
-                    binding.lastCommitDate.setText(navArgs.date)
+                binding.lastCommitDate.setText(navArgs.date)
         }
     }
 

@@ -44,7 +44,7 @@ class ItemDetailsViewModel @Inject constructor(
         repoName: String,
         repoOwner: String,
         date: String
-    ){
+    ) {
         _args.value = ArgData(
             itemId,
             repoName,

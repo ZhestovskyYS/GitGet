@@ -6,6 +6,7 @@ import android.view.View
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import by.kirich1409.viewbindingdelegate.viewBinding
 import com.example.gitget.R
@@ -54,8 +55,7 @@ class ItemListFragment
             this.findNavController().navigate(action)
         }
         binding.recyclerView.layoutManager = LinearLayoutManager(this.context)
-        binding.recyclerView.adapter = adapter/*
-        binding.recyclerView.addItemDecoration()*/
+        binding.recyclerView.adapter = adapter
         viewModel.allRepoItem.observe(this.viewLifecycleOwner) { items ->
             items.let {
                 adapter.submitList(it)

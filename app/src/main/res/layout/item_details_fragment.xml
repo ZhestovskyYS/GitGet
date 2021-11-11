@@ -22,7 +22,7 @@
                 android:id="@+id/rep_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="textAutoComplete|textCapWords"
+                android:inputType="text"
                 android:singleLine="true"
                 android:hint="@string/repository_name"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -40,7 +40,7 @@
                 android:id="@+id/last_commit_date"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="date"
+                android:inputType="text"
                 android:singleLine="true"
                 android:hint="@string/last_commit_date"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -59,7 +59,7 @@
                 android:id="@+id/rep_owner_name"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:inputType="number"
+                android:inputType="text"
                 android:singleLine="true"
                 android:hint="@string/repository_owner_login"/>
         </com.google.android.material.textfield.TextInputLayout>
