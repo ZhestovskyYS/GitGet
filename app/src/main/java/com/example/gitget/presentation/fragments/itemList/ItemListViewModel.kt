@@ -56,43 +56,16 @@ class ItemListViewModel @Inject constructor(
 
     }
 
-    fun updateRepo(
-        id: Int,
-        repoName: String,
-        repoUrl: String,
-        repoOwner: String,
-        date: String
-    ) {
-        val updatedRepoItem = getUpdatedRepoEntry(id, repoName, repoUrl, repoOwner, date)
-        updateRepo(updatedRepoItem)
-    }
-
-    fun retrieveRepo(currentItemIndex: Int) = allRepoItem.value!![currentItemIndex]
-
-    private fun updateRepo(repoItem: RepoItem) {
+    private fun updateRepo(id: Int, repoName: String, repoOwner: String, date: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            _allRepoItem.value?.get(repoItem.id)!!.apply {
-                repoName = repoItem.repoName
-                repoOwner = repoItem.repoOwner
-                lastCommitDate = repoItem.lastCommitDate
-            }
+            val newRepo = _allRepoItem.value!![id].copy(
+                repoName = repoName,
+                repoOwner = repoOwner,
+                lastCommitDate = date
+            )
+            _allRepoItem.value!!.minus(_allRepoItem.value!![id])
+            _allRepoItem.value!!.plus(newRepo)
         }
-    }
-
-    private fun getUpdatedRepoEntry(
-        id: Int,
-        repoName: String,
-        repoUrl: String,
-        repoOwner: String,
-        date: String
-    ): RepoItem {
-        return RepoItem(
-            id = id,
-            repoName = repoName,
-            repoUrl = repoUrl,
-            repoOwner = repoOwner,
-            lastCommitDate = date
-        )
     }
 
     private fun isSearchTextValid(searchText: String): Boolean =

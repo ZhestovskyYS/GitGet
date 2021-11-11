@@ -3,8 +3,12 @@ package com.example.gitget.presentation.fragments.itemDetails
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.gitget.data.RepoItem
 import com.example.gitget.network.models.SimpleRepositoryInfo
 import com.example.gitget.network.repository.GitRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ItemDetailsViewModel @Inject constructor(
@@ -14,12 +18,32 @@ class ItemDetailsViewModel @Inject constructor(
     private val _date = MutableLiveData<String>()
     val date: LiveData<String> = _date
 
-    private suspend fun getDetails(info: SimpleRepositoryInfo) {
-        val details = gitRepository.getDetails(info)
+    private suspend fun getDetails(
+        repoName: String,
+        repoOwner: String
+    ) {
+        val details = gitRepository.getDetails(repoName, repoOwner)
         _date.postValue(details?.commit?.details?.author?.date)
     }
 
-    fun clearDateOnCancel(){
+    fun initializeDate(
+        repoName: String,
+        repoOwner: String
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            getDetails(repoName, repoOwner)
+        }
+    }
+
+    fun isEntryValid(
+        repoName: String,
+        lastCommitDate: String,
+        repoOwner: String
+    ): Boolean {
+        return !(repoName.isBlank() || lastCommitDate.isBlank() || repoOwner.isBlank())
+    }
+
+    fun clearDateOnCancel() {
         _date.value = ""
     }
 }

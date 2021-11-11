@@ -10,7 +10,6 @@ import androidx.navigation.fragment.navArgs
 import com.example.gitget.R
 import com.example.gitget.data.RepoItem
 import com.example.gitget.databinding.ItemDetailsFragmentBinding
-import com.example.gitget.viewModel.RepoSearchViewModel
 import com.example.gitget.utils.ViewModelFactory
 import dagger.android.support.DaggerFragment
 import javax.inject.Inject
@@ -21,60 +20,59 @@ class ItemDetailsFragment : DaggerFragment(R.layout.item_details_fragment) {
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModel by activityViewModels<ItemDetailsViewModel> { viewModelFactory }
 
-    private val navigationArgs: ItemDetailsFragmentArgs by navArgs()
-
-    private lateinit var repo: RepoItem
+    private val navArgs: ItemDetailsFragmentArgs by navArgs()
 
     private val binding by viewBinding(ItemDetailsFragmentBinding::bind)
 
-    private fun bind(repo: RepoItem) {
-        val action = ItemDetailsFragmentDirections.actionItemDetailsFragmentToItemListFragment()
+    private fun bind() {
+        val actionOnSave = ItemDetailsFragmentDirections
+            .actionItemDetailsFragmentToItemListFragment(
+                itemId = navArgs.itemId,
+                repoName = binding.repName.text.toString(),
+                repoOwner = binding.repOwnerName.text.toString(),
+                date = binding.lastCommitDate.text.toString()
+            )
+        val actionOnCancel = ItemDetailsFragmentDirections
+            .actionItemDetailsFragmentToItemListFragment(
+                itemId = navArgs.itemId,
+                repoName = binding.repName.text.toString(),
+                repoOwner = binding.repOwnerName.text.toString(),
+                date = binding.lastCommitDate.text.toString()
+            )
         binding.apply {
-            repName.setText(repo.repoName, TextView.BufferType.SPANNABLE)
-            repOwnerName.setText(repo.repoOwner, TextView.BufferType.SPANNABLE)
+            repName.setText(navArgs.repoName, TextView.BufferType.SPANNABLE)
+            repOwnerName.setText(navArgs.repoOwner, TextView.BufferType.SPANNABLE)
             saveAction.setOnClickListener {
-                findNavController().navigate(action)
-                updateItem()
+                if (isEntryValid())
+                    findNavController().navigate(actionOnSave)
+                else
+                    findNavController().navigate(actionOnCancel)
             }
             cancelAction.setOnClickListener {
-                findNavController().navigate(action)
+                findNavController().navigate(actionOnCancel)
             }
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val id = navigationArgs.itemId
-        repo = viewModel.retrieveRepo(id)
-        bind(repo)
-        if (viewModel.allRepoItem.value!![id].lastCommitDate.isBlank()) viewModel.initializeDate(id)
+        bind()
+        if (navArgs.date.isBlank()) viewModel.initializeDate(
+            navArgs.repoName,
+            navArgs.repoOwner
+        )
         binding.lastCommitDate.setText(viewModel.date.value, TextView.BufferType.SPANNABLE)
-        dateFieldSrcSwitcher(id)
+        dateFieldSrcSwitcher()
     }
 
-    private fun dateFieldSrcSwitcher(itemId: Int) {
+    private fun dateFieldSrcSwitcher() {
         viewModel.date.observe(this.viewLifecycleOwner) {
-            if (viewModel.allRepoItem.value!![itemId].lastCommitDate.isEmpty()) {
+            if (navArgs.date.isBlank()) {
                 viewModel.date.observe(this.viewLifecycleOwner) {
                     binding.lastCommitDate.setText(it)
                 }
-            } else {
-                viewModel.allRepoItem.observe(this.viewLifecycleOwner) {
-                    binding.lastCommitDate.setText(it[itemId].lastCommitDate)
-                }
-            }
-        }
-    }
-
-    private fun updateItem() {
-        if (isEntryValid()) {
-            viewModel.updateRepo(
-                repo.id,
-                this.binding.repName.text.toString(),
-                repo.repoUrl,
-                this.binding.repOwnerName.text.toString(),
-                this.binding.lastCommitDate.text.toString()
-            )
+            } else
+                    binding.lastCommitDate.setText(navArgs.date)
         }
     }
 

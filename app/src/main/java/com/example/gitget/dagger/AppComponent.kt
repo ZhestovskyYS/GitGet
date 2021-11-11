@@ -1,7 +1,7 @@
 package com.example.gitget.dagger
 
 import com.example.gitget.App
-import com.example.gitget.network.GitApiService
+import com.example.gitget.network.GitApiModule
 import com.example.gitget.utils.AppScope
 import dagger.BindsInstance
 import dagger.Component
@@ -11,7 +11,7 @@ import dagger.android.AndroidInjector
 @Component(modules = [
     AppModule::class,
     ActivitiesModule::class,
-    GitApiService::class
+    GitApiModule::class
 ])
 interface AppComponent : AndroidInjector<App> {
     @Component.Builder

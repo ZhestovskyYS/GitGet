@@ -11,19 +11,17 @@ class GitRepository @Inject constructor(
     private val gitApiService: GitApiService
 ) {
 
-    suspend fun getDetails(
-        info: SimpleRepositoryInfo?
-    ) : RepositoryDetails? {
-        info ?: throw NullPointerException()
+    suspend fun getDetails(repoName: String, repoOwner: String):
+            RepositoryDetails? {
         var response = gitApiService.getRepoDetailsAsync(
-            info.repositoryOwner.userName,
-            info.repositoryName,
+            repoOwner,
+            repoName,
             "master"
         ).await()
-        if (!response.isSuccessful){
+        if (!response.isSuccessful) {
             response = gitApiService.getRepoDetailsAsync(
-                info.repositoryOwner.userName,
-                info.repositoryName,
+                repoOwner,
+                repoName,
                 "main"
             ).await()
             if (!response.isSuccessful)
@@ -32,9 +30,8 @@ class GitRepository @Inject constructor(
         return response.body()
     }
 
-    suspend fun search(
-        keyword: String?
-    ): List<SimpleRepositoryInfo> {
+    suspend fun search(keyword: String?):
+            List<SimpleRepositoryInfo> {
         if (keyword.isNullOrBlank()) return emptyList()
         val response = gitApiService.searchReposAsync(keyword).await()
         if (!response.isSuccessful)

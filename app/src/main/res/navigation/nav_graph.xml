@@ -20,7 +20,7 @@
             android:name="repo_owner"
             app:argType="string" />
         <argument
-            android:name="date      "
+            android:name="date"
             app:argType="string" />
         <action
             android:id="@+id/action_itemListFragment_to_itemDetailsFragment"
@@ -39,6 +39,9 @@
             app:argType="string" />
         <argument
             android:name="repo_owner"
+            app:argType="string" />
+        <argument
+            android:name="date"
             app:argType="string" />
         <action
             android:id="@+id/action_itemDetailsFragment_to_itemListFragment"

@@ -25,9 +25,3 @@ buildscript {
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
     }
 }
-
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-
-}

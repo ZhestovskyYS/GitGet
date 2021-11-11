@@ -9,6 +9,7 @@ plugins {
 android {
     compileSdk 31
     buildToolsVersion "30.0.3"
+    compileOptions.incremental = false
 
     defaultConfig {
         applicationId "com.example.gitget"
