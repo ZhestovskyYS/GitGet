@@ -9,7 +9,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.gitget.R
 import com.example.gitget.data.ArgData
-import com.example.gitget.data.RepoItem
 import com.example.gitget.databinding.ItemDetailsFragmentBinding
 import com.example.gitget.utils.ViewModelFactory
 import dagger.android.support.DaggerFragment
@@ -35,12 +34,7 @@ class ItemDetailsFragment : DaggerFragment(R.layout.item_details_fragment) {
     private fun bindActions() {
         var argsData = ArgData(0, "", "", "")
         viewModel.args.observe(this.viewLifecycleOwner) {
-            argsData = ArgData(
-                it.itemId,
-                it.repoName,
-                it.repoOwner,
-                it.date
-            )
+            argsData = ArgData(it.itemId, it.repoName, it.repoOwner, it.date)
         }
         binding.apply {
             saveAction.setOnClickListener {

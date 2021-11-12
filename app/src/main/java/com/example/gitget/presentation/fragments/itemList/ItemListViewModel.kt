@@ -5,8 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gitget.data.RepoItem
-import com.example.gitget.network.models.SimpleRepositoryInfo
-import com.example.gitget.network.repository.GitRepository
+import com.example.network.models.SimpleRepositoryInfo
+import com.example.network.repository.GitRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,21 +33,19 @@ class ItemListViewModel @Inject constructor(
     }
 
     private fun fillAllRepoItem() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val allRepoInstance = mutableListOf<RepoItem>()
-            startInfo.forEachIndexed { index, it ->
-                allRepoInstance.add(
-                    RepoItem(
-                        id = index,
-                        repoName = it.repositoryName,
-                        repoUrl = it.repositoryURL,
-                        repoOwner = it.repositoryOwner.userName,
-                        lastCommitDate = ""
-                    )
+        val allRepoInstance = mutableListOf<RepoItem>()
+        startInfo.forEachIndexed { index, it ->
+            allRepoInstance.add(
+                RepoItem(
+                    id = index,
+                    repoName = it.repositoryName,
+                    repoUrl = it.repositoryURL,
+                    repoOwner = it.repositoryOwner.userName,
+                    lastCommitDate = ""
                 )
-            }
-            _allRepoItem.postValue(allRepoInstance)
+            )
         }
+        _allRepoItem.postValue(allRepoInstance)
     }
 
     fun clearAllRepoItem() {

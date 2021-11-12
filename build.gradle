@@ -11,8 +11,7 @@ buildscript {
         material_version = '1.4.0'
         nav_version = '2.3.5'
 
-        kotlin_version = "1.4.30"
-        dagger_version = "2.27"
+        dagger_version = "2.39.1"
         retrofit_version = "2.9.0"
     }
     repositories {
@@ -24,4 +23,9 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
     }
+}
+
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }

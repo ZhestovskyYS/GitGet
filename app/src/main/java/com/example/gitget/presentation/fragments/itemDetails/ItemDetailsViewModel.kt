@@ -5,9 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gitget.data.ArgData
-import com.example.gitget.data.RepoItem
-import com.example.gitget.network.models.SimpleRepositoryInfo
-import com.example.gitget.network.repository.GitRepository
+import com.example.network.repository.GitRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject

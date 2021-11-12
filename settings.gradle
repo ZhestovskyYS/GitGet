@@ -8,3 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "GitGet"
 include ':app'
+include ':network'

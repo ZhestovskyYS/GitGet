@@ -1,8 +1,8 @@
 package com.example.gitget.dagger
 
 import com.example.gitget.App
-import com.example.gitget.network.GitApiModule
 import com.example.gitget.utils.AppScope
+import com.example.network.GitApiModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector

@@ -1,4 +1,4 @@
-package com.example.gitget.network
+package com.example.network
 
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
